@@ -32,10 +32,11 @@ The neural network is deliberately minimal:
 - One linear output combination  
 
 Conceptually:
-
-input → linear → ReLU ┐
-├─ weighted sum → output
-input → linear → ReLU ┘
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/ea528a0d-839d-4a19-94bf-adf62d55009a" 
+       alt="Two-ReLU neural network architecture" 
+       width="600">
+</p>
 
 
 This setup produces **piecewise linear functions**, which makes it easy to see how:
