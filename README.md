@@ -177,6 +177,16 @@ The project uses a simplified version of the standard Wine dataset to make the m
 
 ## 2. Model Architecture and Setup
 
+## Neural Network Architecture
+
+<p align="center">
+  <img 
+    src="https://github.com/user-attachments/assets/300866f9-9d06-4e4c-b47a-d09e9dd36c7b"
+    alt="Neural Network Architecture"
+    width="600"
+  />
+</p>
+
 The network is built using PyTorch Lightning (`L.LightningModule`) for structured training. It is intentionally kept small to focus on the learning dynamics rather than raw predictive power.
 
 * **Input Layer:** 2 features (Alcohol, Color Intensity)
@@ -237,6 +247,33 @@ The model was trained entirely from scratch (no checkpoint loading) across three
 * **10 Epochs:** ~48.89% Accuracy
 * **100 Epochs:** ~80.00% Accuracy
 * **200 Epochs:** ~77.78% Accuracy
+
+## Training Metrics Visualization
+
+### Accuracy vs Epoch
+
+<p align="center">
+  <img width="680" src="https://github.com/user-attachments/assets/134982ee-e23d-4606-83f6-bd72a5cde568" />
+  <img width="680" src="https://github.com/user-attachments/assets/bb94c691-63cc-4ff2-af9d-d41e59d75a8f" />
+  <img width="680" src="https://github.com/user-attachments/assets/ffd3a5f6-ddcc-4023-b771-920dde0e9db8" />
+</p>
+
+<p align="center">
+  <em>Training accuracy progression across different epoch counts.</em>
+</p>
+
+---
+
+### Loss vs Epoch
+
+<p align="center">
+  <img width="680" src="https://github.com/user-attachments/assets/96c7a54b-1085-4e00-b472-72641eb61602" />
+  <img width="680" src="https://github.com/user-attachments/assets/d725d684-1dce-46d3-a834-7c8c33c4a11f" />
+</p>
+
+<p align="center">
+  <em>Loss curves showing optimization behavior over increasing epochs.</em>
+</p>
 
 **Interpretation:**
 The network learns the most obvious structural patterns in the data during the early epochs, leading to rapid improvement. However, more epochs do not linearly guarantee better performance. The slight dip at 200 epochs (from 80% to ~77.8%) is standard behavior for simple models on small feature sets, indicating a plateau where the model might be oscillating around a minimum or beginning to overfit.
