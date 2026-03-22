@@ -501,3 +501,134 @@ The following graphs show training behavior for both loss functions:
 
 ---
 
+Here is your complete GitHub README-style documentation in Markdown, written in clear, continuous sentences (not just bullet points), and aligned with everything you learned:
+
+⸻
+
+
+# Understanding Long-Term Dependencies by Building an LSTM from Scratch
+
+This project is based on Chapter 8 of *The StatQuest Illustrated Guide to Neural Networks and AI by Joshua Starmer*. Instead of only using built-in implementations, the goal was to understand how an LSTM actually learns memory by building it manually and experimenting with different conditions.
+
+---
+
+## Diagram of LSTM
+
+
+## Problem Setup
+
+The objective of this experiment was to create a simple sequence prediction task where the model is forced to learn a long-term dependency.
+
+Each input sequence consists of four values:
+
+- The first value (Day 1) contains the actual signal  
+- The remaining three values are random noise  
+
+The target is defined as:
+
+Output = 2 × Day 1
+
+Later, this was modified to:
+
+Output = 5 × Day 1
+
+This setup ensures that the model must remember information from the beginning of the sequence while ignoring irrelevant inputs.
+
+---
+
+## Initial Observations and Failure
+
+When the model was first trained, it consistently produced outputs close to `1` regardless of the input sequence. Increasing the number of training epochs did not improve this behavior.
+
+After analyzing the model, it became clear that the issue was not with training but with the mathematical constraints of the architecture. The LSTM uses `tanh` and `sigmoid` activations internally. Since `tanh` outputs values between `-1` and `1`, and `sigmoid` outputs values between `0` and `1`, the model’s final output was effectively bounded within a small range.
+
+Because the target values were much larger (for example, 6 or 14), the model was physically incapable of producing the correct outputs. As a result, it converged to the maximum possible value within its range.
+
+---
+
+## Role of Normalization
+
+To address this issue, both the input data and labels were normalized by scaling them down.
+
+Normalization was not only important for matching output ranges but also for maintaining stable gradients during training. Without normalization, input values such as 7 or 9 would push activation functions into their saturation regions. In these regions, gradients become very small, which prevents effective learning.
+
+After normalization, the model began to train more effectively because the values remained within ranges where activation functions are sensitive and gradients are meaningful.
+
+---
+
+## Model Predicting the Average
+
+After fixing the scaling issue, the model started producing nearly identical outputs for different inputs. Instead of learning the relationship between Day 1 and the output, it predicted a constant value.
+
+This behavior can be explained by the use of mean squared error as the loss function. When the model cannot identify a meaningful pattern, the best way to minimize loss is to predict the average of the target values.
+
+This revealed that the model was not yet learning the dependency and was instead defaulting to a trivial solution.
+
+---
+
+## Importance of the Output Layer
+
+Another key realization was that the raw output of the LSTM is not the final prediction. The LSTM produces a representation of the sequence in the form of its hidden state.
+
+To convert this representation into the desired output, a linear layer was added. This layer learns how to map the internal memory representation to the actual target values.
+
+Without this mapping, the model remains constrained by the activation functions and cannot produce outputs in the required range.
+
+---
+
+## Hidden Size and Model Capacity
+
+Initially, the model was implemented with a hidden size of 1. This means that the LSTM had only a single value to store all information about the sequence.
+
+In this configuration, the model was forced to store the important signal, ignore noise, and compute the output all within a single scalar value. This severely limited its ability to learn meaningful patterns.
+
+Increasing the hidden size to 2 significantly improved performance. With multiple dimensions in the hidden state, the model could represent different aspects of the sequence separately. For example, one dimension could focus on storing the important signal from Day 1, while another could handle noise or auxiliary information.
+
+This demonstrated that hidden size directly affects the model’s capacity to represent and separate information.
+
+---
+
+## Importance of Data Quantity
+
+Initially, the model was trained on a very small number of samples. This made it difficult for the model to distinguish between signal and noise.
+
+To address this, approximately 500 sequences were generated. In this dataset, Day 1 values varied independently from the noise values. This allowed the model to observe that the output consistently depends on Day 1, while the other values do not carry useful information.
+
+With more data, the dependency became clearer, and the model was able to learn the correct pattern.
+
+---
+
+## Strengthening the Signal
+
+To make the relationship between input and output more prominent, the target function was modified from:
+
+Output = 2 × Day 1
+
+to:
+
+Output = 5 × Day 1
+
+This increased the influence of Day 1 relative to the noise and made it easier for the model to detect the underlying pattern.
+
+---
+
+## Training Behavior
+
+The training process exhibited a characteristic pattern. Initially, the loss remained nearly constant for a long period. After some time, there was a sudden drop in loss, followed by gradual improvement.
+
+This behavior suggests that the model first struggled to understand the task, then discovered the key dependency, and finally refined its predictions.
+
+---
+
+## Final Understanding
+
+This experiment provided a deeper understanding of how LSTMs learn long-term dependencies.
+
+It showed that LSTMs do not automatically remember important information. They require properly scaled inputs, sufficient model capacity, enough data, and a clear relationship between input and output.
+
+It also demonstrated that when a model cannot identify a pattern, it will default to predicting the average, which is the optimal solution for minimizing mean squared error in the absence of learned structure.
+
+Overall, this project helped move beyond simply using LSTMs toward understanding how they behave internally and how different design choices affect learning.
+
+
+⸻
